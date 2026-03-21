@@ -10,6 +10,7 @@ public class KfsMain extends Game {
     @Override
     public void create() {
         music = new MusicManager("music/");
+        music.play();
         setScreen(new MainScreen(this));
     }
 
