@@ -56,10 +56,10 @@ tasks.register('packageTeavmTar', Tar) {
 
 tasks.register('uploadTeavmTar', Exec) {
   dependsOn 'packageTeavmTar'
-  commandLine "bash", "-c", "scp $buildDir/dist/spaceinvaders.tar.gz walk:"
+  commandLine "bash", "-c", "scp $buildDir/dist/spaceinvaders.tar.gz kofis@kofis.eu:"
 }
 
 tasks.register('remoteInstall', Exec) {
   dependsOn 'uploadTeavmTar'
-  commandLine "bash", "-c", "ssh walk 'rm -rf www/kuba/gm006;mkdir www/kuba/gm006;cd www/kuba/gm006;tar -zxf ~/spaceinvaders.tar.gz;rm ~/spaceinvaders.tar.gz'"
+  commandLine "bash", "-c", "ssh kofis@kofis.eu 'rm -rf www/kuba/gm006;mkdir -p www/kuba/gm006;cd www/kuba/gm006;tar -zxf ~/spaceinvaders.tar.gz;rm ~/spaceinvaders.tar.gz'"
 }
