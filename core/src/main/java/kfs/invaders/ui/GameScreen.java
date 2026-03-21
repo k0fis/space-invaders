@@ -32,7 +32,8 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void show() {
-        // Don't set input processor to stage — we use polling in InputSys
+        // Clear input processor — we use polling in InputSys, not stage events
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override

@@ -13,7 +13,8 @@ public class GameOverScreen extends BaseScreen {
 
     private final int score;
     private final Table table;
-    private final char[] nameChars = {'A', 'A', 'A', 'A', 'A', 'A'};
+    private static final String CHAR_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
+    private final char[] nameChars = {' ', ' ', ' ', ' ', ' ', ' '};
 
     public GameOverScreen(KfsMain game, int score) {
         super(game);
@@ -40,13 +41,14 @@ public class GameOverScreen extends BaseScreen {
         for (int i = 0; i < nameChars.length; i++) {
             final int pos = i;
             TextButton letterBtn = new TextButton(
-                String.valueOf(nameChars[pos]),
+                nameChars[pos] == ' ' ? "_" : String.valueOf(nameChars[pos]),
                 getTextButtonStyle(fontBig, Color.WHITE));
             letterBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    nameChars[pos] = (char) ((nameChars[pos] - 'A' + 1) % 26 + 'A');
-                    letterBtn.setText(String.valueOf(nameChars[pos]));
+                    int idx = CHAR_SET.indexOf(nameChars[pos]);
+                    nameChars[pos] = CHAR_SET.charAt((idx + 1) % CHAR_SET.length());
+                    letterBtn.setText(nameChars[pos] == ' ' ? "_" : String.valueOf(nameChars[pos]));
                 }
             });
             nameRow.add(letterBtn).width(55).height(60).pad(3);
@@ -58,7 +60,8 @@ public class GameOverScreen extends BaseScreen {
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String name = new String(nameChars);
+                String name = new String(nameChars).trim();
+                if (name.isEmpty()) name = "AAA";
                 showSubmitting();
                 ScoreClient.submitScore(name, score, new ScoreClient.SubmitCallback() {
                     @Override
