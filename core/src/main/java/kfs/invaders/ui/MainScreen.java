@@ -7,6 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import kfs.invaders.KfsMain;
+import kfs.invaders.ScoreClient;
+
+import java.util.List;
 
 public class MainScreen extends BaseScreen {
 
@@ -27,7 +30,27 @@ public class MainScreen extends BaseScreen {
         // Dedication
         Label.LabelStyle smallStyle = new Label.LabelStyle(fontSmall, Color.CYAN);
         Label dedicationLabel = new Label("pro Kubu", smallStyle);
-        table.add(dedicationLabel).padBottom(60).row();
+        table.add(dedicationLabel).padBottom(20).row();
+
+        // High score (loaded async from server)
+        Label.LabelStyle hiStyle = new Label.LabelStyle(fontSmall, Color.YELLOW);
+        Label hiScoreLabel = new Label("", hiStyle);
+        table.add(hiScoreLabel).padBottom(40).row();
+
+        ScoreClient.getTopScores(1, new ScoreClient.TopScoresCallback() {
+            @Override
+            public void onSuccess(List<ScoreClient.ScoreEntry> scores) {
+                if (!scores.isEmpty()) {
+                    ScoreClient.ScoreEntry top = scores.get(0);
+                    hiScoreLabel.setText("HI-SCORE: " + top.score + " " + top.playerName);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                // offline - no high score shown
+            }
+        });
 
         // Play button
         TextButton playButton = new TextButton("PLAY", getTextButtonStyle(fontMiddle, Color.WHITE));
