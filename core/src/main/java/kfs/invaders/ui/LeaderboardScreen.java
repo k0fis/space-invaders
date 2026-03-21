@@ -83,7 +83,7 @@ public class LeaderboardScreen extends BaseScreen {
     }
 
     private void addButtons() {
-        TextButton playAgainButton = new TextButton("PLAY AGAIN", getTextButtonStyle(fontMiddle, Color.WHITE));
+        TextButton playAgainButton = new TextButton("PLAY", getTextButtonStyle(fontMiddle, Color.WHITE));
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

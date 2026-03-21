@@ -13,7 +13,7 @@ public class GameOverScreen extends BaseScreen {
 
     private final int score;
     private final Table table;
-    private final char[] nameChars = {'A', 'A', 'A'};
+    private final char[] nameChars = {'A', 'A', 'A', 'A', 'A', 'A'};
 
     public GameOverScreen(KfsMain game, int score) {
         super(game);
@@ -49,7 +49,7 @@ public class GameOverScreen extends BaseScreen {
                     letterBtn.setText(String.valueOf(nameChars[pos]));
                 }
             });
-            nameRow.add(letterBtn).width(70).height(70).pad(5);
+            nameRow.add(letterBtn).width(55).height(60).pad(3);
         }
         table.add(nameRow).padBottom(20).row();
 
