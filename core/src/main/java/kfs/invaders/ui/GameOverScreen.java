@@ -1,14 +1,11 @@
 package kfs.invaders.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import kfs.invaders.KfsMain;
 import kfs.invaders.ScoreClient;
 
@@ -16,7 +13,7 @@ public class GameOverScreen extends BaseScreen {
 
     private final int score;
     private final Table table;
-    private String playerName = "AAA";
+    private final char[] nameChars = {'A', 'A', 'A'};
 
     public GameOverScreen(KfsMain game, int score) {
         super(game);
@@ -32,37 +29,38 @@ public class GameOverScreen extends BaseScreen {
 
     private void showEnterName() {
         table.clear();
-
         addHeader();
 
-        // Name input row
-        Table inputRow = new Table();
+        // Instruction
+        Label.LabelStyle hintStyle = new Label.LabelStyle(fontSmall, Color.GRAY);
+        table.add(new Label("TAP TO CHANGE", hintStyle)).padBottom(15).row();
 
-        TextField.TextFieldStyle tfStyle = new TextField.TextFieldStyle(skin.get(TextField.TextFieldStyle.class));
-        tfStyle.font = fontMiddle;
-        tfStyle.fontColor = Color.WHITE;
+        // Letter picker - 3 tappable letters
+        Table nameRow = new Table();
+        for (int i = 0; i < nameChars.length; i++) {
+            final int pos = i;
+            TextButton letterBtn = new TextButton(
+                String.valueOf(nameChars[pos]),
+                getTextButtonStyle(fontBig, Color.WHITE));
+            letterBtn.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    nameChars[pos] = (char) ((nameChars[pos] - 'A' + 1) % 26 + 'A');
+                    letterBtn.setText(String.valueOf(nameChars[pos]));
+                }
+            });
+            nameRow.add(letterBtn).width(70).height(70).pad(5);
+        }
+        table.add(nameRow).padBottom(20).row();
 
-        TextField nameField = new TextField(playerName, tfStyle);
-        nameField.setMaxLength(6);
-        nameField.setAlignment(Align.center);
-        nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c));
-        nameField.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                nameField.selectAll();
-                Gdx.input.setOnscreenKeyboardVisible(true);
-            }
-        });
-        inputRow.add(nameField).width(130).height(50).padRight(10);
-
+        // Submit
         TextButton submitButton = new TextButton("SUBMIT", getTextButtonStyle(fontMiddle, Color.LIME));
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                playerName = nameField.getText().toUpperCase().trim();
-                if (playerName.isEmpty()) playerName = "AAA";
+                String name = new String(nameChars);
                 showSubmitting();
-                ScoreClient.submitScore(playerName, score, new ScoreClient.SubmitCallback() {
+                ScoreClient.submitScore(name, score, new ScoreClient.SubmitCallback() {
                     @Override
                     public void onSuccess(long rank, int personalBest, boolean isNewRecord) {
                         showResult(rank, personalBest, isNewRecord);
@@ -75,8 +73,7 @@ public class GameOverScreen extends BaseScreen {
                 });
             }
         });
-        inputRow.add(submitButton).width(180).height(50);
-        table.add(inputRow).padBottom(30).row();
+        table.add(submitButton).width(250).height(60).padBottom(20).row();
 
         addPlayAgainAndMenu();
     }
@@ -93,7 +90,6 @@ public class GameOverScreen extends BaseScreen {
         table.clear();
         addHeader();
 
-        // Rank display
         if (isNewRecord) {
             Label.LabelStyle recordStyle = new Label.LabelStyle(fontMiddle, Color.LIME);
             table.add(new Label("#" + rank + " NEW RECORD!", recordStyle)).padBottom(10).row();
@@ -102,11 +98,9 @@ public class GameOverScreen extends BaseScreen {
             table.add(new Label("RANK #" + rank, rankStyle)).padBottom(10).row();
         }
 
-        // Personal best
         Label.LabelStyle bestStyle = new Label.LabelStyle(fontSmall, Color.WHITE);
         table.add(new Label("BEST: " + personalBest, bestStyle)).padBottom(40).row();
 
-        // Leaderboard button
         TextButton lbButton = new TextButton("LEADERBOARD", getTextButtonStyle(fontMiddle, Color.GOLD));
         lbButton.addListener(new ClickListener() {
             @Override
@@ -126,7 +120,6 @@ public class GameOverScreen extends BaseScreen {
         Label.LabelStyle errStyle = new Label.LabelStyle(fontMiddle, Color.RED);
         table.add(new Label(message, errStyle)).padBottom(40).row();
 
-        // Retry button → back to ENTER_NAME
         TextButton retryButton = new TextButton("RETRY", getTextButtonStyle(fontMiddle, Color.YELLOW));
         retryButton.addListener(new ClickListener() {
             @Override
