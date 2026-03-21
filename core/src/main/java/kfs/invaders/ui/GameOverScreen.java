@@ -45,6 +45,12 @@ public class GameOverScreen extends BaseScreen {
         nameField.setMaxLength(6);
         nameField.setAlignment(Align.center);
         nameField.setTextFieldFilter((textField, c) -> Character.isLetter(c));
+        nameField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                nameField.selectAll();
+            }
+        });
         inputRow.add(nameField).width(130).height(50).padRight(10);
 
         TextButton submitButton = new TextButton("SUBMIT", getTextButtonStyle(fontMiddle, Color.LIME));
