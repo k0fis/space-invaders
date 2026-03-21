@@ -1,5 +1,6 @@
 package kfs.invaders.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -49,6 +50,7 @@ public class GameOverScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 nameField.selectAll();
+                Gdx.input.setOnscreenKeyboardVisible(true);
             }
         });
         inputRow.add(nameField).width(130).height(50).padRight(10);

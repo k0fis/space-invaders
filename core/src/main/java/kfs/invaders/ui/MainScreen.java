@@ -62,6 +62,16 @@ public class MainScreen extends BaseScreen {
         });
         table.add(playButton).width(250).height(60).padBottom(20).row();
 
+        // Leaderboard button
+        TextButton lbButton = new TextButton("LEADERBOARD", getTextButtonStyle(fontMiddle, Color.GOLD));
+        lbButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new LeaderboardScreen(game, 0));
+            }
+        });
+        table.add(lbButton).width(350).height(60).padBottom(20).row();
+
         // Instructions
         Label.LabelStyle instrStyle = new Label.LabelStyle(fontSmall, Color.GRAY);
         table.add(new Label("Arrows/Touch: Move", instrStyle)).padBottom(8).row();
